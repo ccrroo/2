@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ローディング画面</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f2f2f2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .loading-container {
+      background-color: #fff;
+      border: 1px solid #ddd;
+      padding: 20px;
+      text-align: center;
+      border-radius: 10px;
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+      position: relative;
+    }
+
+    .loading-bar {
+      width: 0%;
+      height: 10px;
+      background-color: #4CAF50;
+      border-radius: 5px;
+      margin-top: 20px;
+      transition: width 0.5s ease;
+    }
+
+    .content {
+      display: none;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      cursor: pointer; /* ポインタカーソルに変更 */
+    }
+
+    .content img {
+      /* アニメーションを削除 */
+      transform: translate(-50%, -50%); /* 中央揃え */
+    }
+
+    .content p {
+      display: none;
+      margin-top: 10px;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+    }
+  </style>
+</head>
+<body>
+  <div class="loading-container">
+    <p>ローディング中...</p>
+    <div class="loading-bar"></div>
+  </div>
+
+  <div class="content">
+    <img src="https://telegra.ph/file/8a3f43ce2723fe2f1e08b.png" alt="画像">
+    <p>端末の情報を収集中</p>
+  </div>
+
+  <script>
+    const loadingBar = document.querySelector('.loading-bar');
+    let progress = 0;
+    let isPaused = false;
+
+    const updateProgress = () => {
+      if (!isPaused) {
+        progress += Math.random() * 2;
+        if (progress >= 100) {
+          clearInterval(interval);
+          document.querySelector('.loading-container').style.display = 'none';
+          document.querySelector('.content').style.display = 'block';
+
+          // 画像の下にテキストを表示
+          setTimeout(() => {
+            const text = document.querySelector('.content p');
+            text.style.opacity = 1;
+            text.style.display = 'block';
+          }, 1000);
+
+        } else {
+          loadingBar.style.width = progress + '%';
+        }
+      } else {
+        setTimeout(() => {
+          isPaused = false;
+        }, Math.random() * 2000 + 1000);
+      }
+    };
+
+    const interval = setInterval(updateProgress, 50);
+
+    setInterval(() => {
+      isPaused = true;
+    }, Math.random() * 4000 + 2000);
+
+    // 画像クリック時のイベント
+    const image = document.querySelector('.content img');
+    image.addEventListener('click', () => {
+      // 警告音の再生
+      const audio = new Audio('https://soundeffect-lab.info/sound/machine/mp3/mobile-phone-ringtone2.mp3');
+      audio.play();
+    });
+  </script>
+</body>
+</html>
