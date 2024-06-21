@@ -3,115 +3,272 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ローディング画面</title>
+  <title>Loading Animation</title>
   <style>
     body {
       margin: 0;
       padding: 0;
-      background-color: #f2f2f2;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      overflow: hidden;
+      background-color: #000;
+      color: #fff;
+      font-family: sans-serif;
     }
 
     .loading-container {
-      background-color: #fff;
-      border: 1px solid #ddd;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background-color: #333;
       padding: 20px;
-      text-align: center;
       border-radius: 10px;
-      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
-      position: relative;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
-    .loading-bar {
-      width: 0%;
+    .loading-text {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+
+    .progress-bar {
+      width: 100%;
       height: 10px;
-      background-color: #4CAF50;
+      background-color: #eee;
       border-radius: 5px;
-      margin-top: 20px;
-      transition: width 0.5s ease;
+      overflow: hidden;
     }
 
-    .content {
+    .progress-bar-fill {
+      height: 100%;
+      background-color: #FFD700;
+      width: 0%;
+      border-radius: 5px 0 0 5px;
+      animation: progress-animation 5s linear forwards;
+    }
+
+    @keyframes progress-animation {
+      0% {
+        width: 0%;
+      }
+      50% {
+        width: 50%;
+        animation-timing-function: ease-in;
+      }
+      100% {
+        width: 100%;
+        animation-timing-function: ease-out;
+      }
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    #next-page h1 {
+      margin-bottom: 20px;
+    }
+
+    #next-page button {
+      background-color: #C00;
+      color: #fff;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 5px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      animation: button-animation 1s infinite alternate;
+    }
+
+    #next-page button::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.2);
+      animation: glow-animation 1s linear infinite;
+      animation-delay: 0.5s;
+    }
+
+    @keyframes button-animation {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.1);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    @keyframes glow-animation {
+      0% {
+        width: 0%;
+      }
+      100% {
+        width: 100%;
+      }
+    }
+
+    #paper-bag {
       display: none;
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      cursor: pointer; /* ポインタカーソルに変更 */
+      width: 500px;
+      height: 500px;
     }
 
-    .content img {
-      /* アニメーションを削除 */
-      transform: translate(-50%, -50%); /* 中央揃え */
+    #paper-bag svg {
+      width: 100%;
+      height: 100%;
     }
 
-    .content p {
-      display: none;
-      margin-top: 10px;
-      text-align: center;
-      opacity: 0;
-      transition: opacity 0.5s ease-in-out;
+    #paper-bag path {
+      stroke-width: 10px;
+      fill: none;
+      animation: path-animation 3s linear infinite;
+    }
+
+    @keyframes path-animation {
+      0% {
+        stroke-dashoffset: 0;
+      }
+      100% {
+        stroke-dashoffset: 100;
+      }
     }
   </style>
 </head>
 <body>
   <div class="loading-container">
-    <p>ローディング中...</p>
-    <div class="loading-bar"></div>
+    <div class="loading-text">Loading...</div>
+    <div class="progress-bar">
+      <div class="progress-bar-fill"></div>
+    </div>
   </div>
 
-  <div class="content">
-    <img src="https://telegra.ph/file/8a3f43ce2723fe2f1e08b.png" alt="画像">
-    <p>端末の情報を収集中</p>
+  <div class="hidden" id="next-page">
+    <h1>闇のくじ引き</h1>
+    <button>くじ引き開始</button>
+  </div>
+
+  <div id="paper-bag">
+    <svg viewBox="0 0 500 500" id="paper-bag-svg"></svg>
   </div>
 
   <script>
-    const loadingBar = document.querySelector('.loading-bar');
-    let progress = 0;
-    let isPaused = false;
+    // アニメーション終了時に次の画面を表示
+    const progressBarFill = document.querySelector('.progress-bar-fill');
+    const nextPage = document.getElementById('next-page');
+    const paperBag = document.getElementById('paper-bag');
+    const paperBagSvg = document.getElementById('paper-bag-svg');
 
-    const updateProgress = () => {
-      if (!isPaused) {
-        progress += Math.random() * 2;
-        if (progress >= 100) {
-          clearInterval(interval);
-          document.querySelector('.loading-container').style.display = 'none';
-          document.querySelector('.content').style.display = 'block';
-
-          // 画像の下にテキストを表示
-          setTimeout(() => {
-            const text = document.querySelector('.content p');
-            text.style.opacity = 1;
-            text.style.display = 'block';
-          }, 1000);
-
-        } else {
-          loadingBar.style.width = progress + '%';
-        }
-      } else {
-        setTimeout(() => {
-          isPaused = false;
-        }, Math.random() * 2000 + 1000);
-      }
-    };
-
-    const interval = setInterval(updateProgress, 50);
-
-    setInterval(() => {
-      isPaused = true;
-    }, Math.random() * 4000 + 2000);
-
-    // 画像クリック時のイベント
-    const image = document.querySelector('.content img');
-    image.addEventListener('click', () => {
-      // 警告音の再生
-      const audio = new Audio('https://soundeffect-lab.info/sound/machine/mp3/mobile-phone-ringtone2.mp3');
-      audio.play();
+    progressBarFill.addEventListener('animationend', () => {
+      nextPage.classList.remove('hidden');
+      document.querySelector('.loading-container').style.display = 'none';
     });
+
+    // ボタンクリックで紙袋を表示し、タイトルとボタンを消す
+    const button = nextPage.querySelector('button');
+    button.addEventListener('click', () => {
+      paperBag.style.display = 'block';
+      nextPage.querySelector('h1').style.display = 'none';
+      button.style.display = 'none';
+
+      // ランダムな紙袋を描画
+      drawRandomPaperBag();
+    });
+
+    // ランダムな紙袋を描画する関数
+    function drawRandomPaperBag() {
+      const paths = [
+        // 基本の紙袋
+        "M50,50 L50,450 L200,450 L250,350 L350,350 L400,450 L450,450 L450,50 Z",
+        "M250,50 L250,200 L350,200 L350,50 Z",
+        "M150,50 L150,150 L250,150 L250,50 Z",
+
+        // ランダムな要素を追加
+        "M100,100 L100,200 L200,200 L200,100 Z",
+        "M300,100 L300,200 L400,200 L400,100 Z",
+        "M150,300 L150,400 L250,400 L250,300 Z",
+        "M350,300 L350,400 L450,400 L450,300 Z"
+      ];
+
+      // ランダムにパスを選択
+      const randomPaths = paths.sort(() => 0.5 - Math.random()).slice(0, 3);
+
+      // SVG要素をクリア
+      paperBagSvg.innerHTML = '';
+
+      // ランダムなパスで紙袋を描画
+      randomPaths.forEach(path => {
+        const pathElement = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        pathElement.setAttribute('d', path);
+
+        // ランダムな色を生成
+        const randomColor = getRandomColor();
+        pathElement.setAttribute('stroke', randomColor);
+
+        pathElement.setAttribute('stroke-width', '10');
+        pathElement.setAttribute('fill', 'none');
+
+        // ランダムなアニメーションを追加
+        const animationTypes = ['path-animation', 'path-animation-2'];
+        const randomAnimation = animationTypes[Math.floor(Math.random() * animationTypes.length)];
+        pathElement.style.animation = `${randomAnimation} 3s linear infinite`;
+
+        paperBagSvg.appendChild(pathElement);
+      });
+    }
+
+    // ランダムな色を生成する関数
+    function getRandomColor() {
+      const letters = '0123456789ABCDEF';
+      let color = '#';
+      for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
+    }
+
+    // アニメーションの定義
+    const pathAnimation = `
+      @keyframes path-animation {
+        0% {
+          stroke-dashoffset: 0;
+        }
+        100% {
+          stroke-dashoffset: 100;
+        }
+      }
+    `;
+
+    const pathAnimation2 = `
+      @keyframes path-animation-2 {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.2);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+    `;
+
+    // アニメーションをスタイルに追加
+    const styleSheet = document.styleSheets[0];
+    styleSheet.insertRule(pathAnimation, styleSheet.cssRules.length);
+    styleSheet.insertRule(pathAnimation2, styleSheet.cssRules.length);
   </script>
 </body>
 </html>
