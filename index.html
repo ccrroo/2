@@ -1,274 +1,108 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Loading Animation</title>
+  <title>年齢確認</title>
   <style>
     body {
-      margin: 0;
-      padding: 0;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      background-color: #000;
-      color: #fff;
-      font-family: sans-serif;
+      margin: 0;
+      font-family: 'Comic Sans MS', cursive;
+      background-color: #ff69b4;
+    }
+
+    .container {
+      border: 2px solid black;
+      padding: 20px;
+      text-align: center;
+      border-radius: 10px;
+      box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
+      background-color: white;
+    }
+
+    button {
+      margin: 10px;
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .yes-button {
+      background-color: #4CAF50;
+    }
+
+    .no-button {
+      background-color: #f44336;
     }
 
     .loading-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      background-color: #333;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .loading-text {
-      font-size: 1.5rem;
-      margin-bottom: 10px;
-    }
-
-    .progress-bar {
-      width: 100%;
-      height: 10px;
-      background-color: #eee;
-      border-radius: 5px;
-      overflow: hidden;
-    }
-
-    .progress-bar-fill {
-      height: 100%;
-      background-color: #FFD700;
-      width: 0%;
-      border-radius: 5px 0 0 5px;
-      animation: progress-animation 5s linear forwards;
-    }
-
-    @keyframes progress-animation {
-      0% {
-        width: 0%;
-      }
-      50% {
-        width: 50%;
-        animation-timing-function: ease-in;
-      }
-      100% {
-        width: 100%;
-        animation-timing-function: ease-out;
-      }
-    }
-
-    .hidden {
       display: none;
-    }
-
-    #next-page h1 {
-      margin-bottom: 20px;
-    }
-
-    #next-page button {
-      background-color: #C00;
-      color: #fff;
-      border: none;
-      padding: 15px 30px;
-      border-radius: 5px;
-      font-size: 1.2rem;
-      cursor: pointer;
-      position: relative;
-      overflow: hidden;
-      animation: button-animation 1s infinite alternate;
-    }
-
-    #next-page button::after {
-      content: '';
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      width: 100vw;
       position: absolute;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(255, 255, 255, 0.2);
-      animation: glow-animation 1s linear infinite;
-      animation-delay: 0.5s;
+      background-color: rgba(0, 0, 0, 0.5);
     }
 
-    @keyframes button-animation {
-      0% {
-        transform: scale(1);
-      }
-      50% {
-        transform: scale(1.1);
-      }
-      100% {
-        transform: scale(1);
-      }
+    .loading-text {
+      font-size: 24px;
+      color: white;
+      font-weight: bold; /* 文字を太くする */
     }
 
-    @keyframes glow-animation {
-      0% {
-        width: 0%;
-      }
-      100% {
-        width: 100%;
-      }
+    .loading-circle {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 10px solid #ddd;
+      border-top-color: #00bfff;
+      animation: spin 2s linear infinite;
     }
 
-    #paper-bag {
-      display: none;
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 500px;
-      height: 500px;
-    }
-
-    #paper-bag svg {
-      width: 100%;
-      height: 100%;
-    }
-
-    #paper-bag path {
-      stroke-width: 10px;
-      fill: none;
-      animation: path-animation 3s linear infinite;
-    }
-
-    @keyframes path-animation {
-      0% {
-        stroke-dashoffset: 0;
-      }
-      100% {
-        stroke-dashoffset: 100;
-      }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
 <body>
+
+  <div class="container">
+    <h1>18歳以上ですか？</h1>
+    <button class="yes-button">はい</button>
+    <button class="no-button">いいえ</button>
+  </div>
+
   <div class="loading-container">
-    <div class="loading-text">Loading...</div>
-    <div class="progress-bar">
-      <div class="progress-bar-fill"></div>
-    </div>
-  </div>
-
-  <div class="hidden" id="next-page">
-    <h1>闇のくじ引き</h1>
-    <button>くじ引き開始</button>
-  </div>
-
-  <div id="paper-bag">
-    <svg viewBox="0 0 500 500" id="paper-bag-svg"></svg>
+    <div class="loading-circle"></div>
+    <div class="loading-text">ローディング中...</div>
   </div>
 
   <script>
-    // アニメーション終了時に次の画面を表示
-    const progressBarFill = document.querySelector('.progress-bar-fill');
-    const nextPage = document.getElementById('next-page');
-    const paperBag = document.getElementById('paper-bag');
-    const paperBagSvg = document.getElementById('paper-bag-svg');
+    const yesButton = document.querySelector('.yes-button');
+    const noButton = document.querySelector('.no-button');
+    const loadingContainer = document.querySelector('.loading-container');
+    const container = document.querySelector('.container');
 
-    progressBarFill.addEventListener('animationend', () => {
-      nextPage.classList.remove('hidden');
-      document.querySelector('.loading-container').style.display = 'none';
+    yesButton.addEventListener('click', () => {
+      // ローディング画面を表示
+      loadingContainer.style.display = 'flex';
+      container.style.display = 'none'; // ボタンを非表示にする
     });
 
-    // ボタンクリックで紙袋を表示し、タイトルとボタンを消す
-    const button = nextPage.querySelector('button');
-    button.addEventListener('click', () => {
-      paperBag.style.display = 'block';
-      nextPage.querySelector('h1').style.display = 'none';
-      button.style.display = 'none';
-
-      // ランダムな紙袋を描画
-      drawRandomPaperBag();
+    noButton.addEventListener('click', () => {
+      // 指定された URL に遷移
+      window.location.href = 'https://ccrroo.github.io/1';
     });
-
-    // ランダムな紙袋を描画する関数
-    function drawRandomPaperBag() {
-      const paths = [
-        // 基本の紙袋
-        "M50,50 L50,450 L200,450 L250,350 L350,350 L400,450 L450,450 L450,50 Z",
-        "M250,50 L250,200 L350,200 L350,50 Z",
-        "M150,50 L150,150 L250,150 L250,50 Z",
-
-        // ランダムな要素を追加
-        "M100,100 L100,200 L200,200 L200,100 Z",
-        "M300,100 L300,200 L400,200 L400,100 Z",
-        "M150,300 L150,400 L250,400 L250,300 Z",
-        "M350,300 L350,400 L450,400 L450,300 Z"
-      ];
-
-      // ランダムにパスを選択
-      const randomPaths = paths.sort(() => 0.5 - Math.random()).slice(0, 3);
-
-      // SVG要素をクリア
-      paperBagSvg.innerHTML = '';
-
-      // ランダムなパスで紙袋を描画
-      randomPaths.forEach(path => {
-        const pathElement = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        pathElement.setAttribute('d', path);
-
-        // ランダムな色を生成
-        const randomColor = getRandomColor();
-        pathElement.setAttribute('stroke', randomColor);
-
-        pathElement.setAttribute('stroke-width', '10');
-        pathElement.setAttribute('fill', 'none');
-
-        // ランダムなアニメーションを追加
-        const animationTypes = ['path-animation', 'path-animation-2'];
-        const randomAnimation = animationTypes[Math.floor(Math.random() * animationTypes.length)];
-        pathElement.style.animation = `${randomAnimation} 3s linear infinite`;
-
-        paperBagSvg.appendChild(pathElement);
-      });
-    }
-
-    // ランダムな色を生成する関数
-    function getRandomColor() {
-      const letters = '0123456789ABCDEF';
-      let color = '#';
-      for (let i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
-      }
-      return color;
-    }
-
-    // アニメーションの定義
-    const pathAnimation = `
-      @keyframes path-animation {
-        0% {
-          stroke-dashoffset: 0;
-        }
-        100% {
-          stroke-dashoffset: 100;
-        }
-      }
-    `;
-
-    const pathAnimation2 = `
-      @keyframes path-animation-2 {
-        0% {
-          transform: scale(1);
-        }
-        50% {
-          transform: scale(1.2);
-        }
-        100% {
-          transform: scale(1);
-        }
-      }
-    `;
-
-    // アニメーションをスタイルに追加
-    const styleSheet = document.styleSheets[0];
-    styleSheet.insertRule(pathAnimation, styleSheet.cssRules.length);
-    styleSheet.insertRule(pathAnimation2, styleSheet.cssRules.length);
   </script>
+
 </body>
 </html>
